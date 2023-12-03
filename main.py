@@ -12,7 +12,7 @@ def baixar_video():
         selected_option = quality_var.get()
 
         if selected_option == "Apenas Audio":
-            video = ytObject.streams.filter(only_audio=True).first()
+            video = ytObject.streams.get_audio_only()
         elif selected_option == "Alta Qualidade":
             video = ytObject.streams.get_highest_resolution()
         elif selected_option == "Menor Qualidade":
@@ -45,18 +45,6 @@ def baixar_video():
                                text_color="red")
 
 
-def update_progress(bytes_downloaded, total_size):
-    porcentagem_completa = bytes_downloaded / total_size * 100
-    per = str(int(porcentagem_completa))
-    porcentagem.configure(text=per + '%')
-    loading_bar.set(float(porcentagem_completa) / 100)
-    tela.update_idletasks()
-
-def progresso(stream, chunk, bytes_remaining):
-    total_size = stream.filesize
-    bytes_downloaded = total_size - bytes_remaining
-
-    update_progress(bytes_downloaded, total_size)
 
 
 customtkinter.set_appearance_mode("System")
@@ -76,13 +64,6 @@ link.pack(pady=5)
 finishscreen = customtkinter.CTkLabel(tela, text="")
 finishscreen.pack()
 
-loading_bar = customtkinter.CTkProgressBar(tela, width=400)
-loading_bar.set(0)
-loading_bar.pack(padx=10, pady=5)
-
-porcentagem = customtkinter.CTkLabel(tela, text="0%")
-porcentagem.pack()
-
 quality_var = tkinter.StringVar()
 quality_var.set("Apenas Audio")
 quality_options = ["Apenas Audio", "Alta Qualidade", "Menor Qualidade"]
@@ -90,7 +71,7 @@ quality_options = ["Apenas Audio", "Alta Qualidade", "Menor Qualidade"]
 quality_menu = customtkinter.CTkOptionMenu(master=tela,
                                            values=quality_options,
                                            variable=quality_var)
-quality_menu.pack(pady=10)
+quality_menu.pack(pady=5)
 
 
 botao = customtkinter.CTkButton(tela, text="Baixar Video!", command=baixar_video, width=75, height=35)
